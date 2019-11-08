@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">omdbAPI</string>
+    <string name="movie_title">titulo</string>
+    <string name="movie_year">ano</string>
+    <string name="movie_genre">genero</string>
+    <string name="plot">Plot</string>
+    <string name="movie_plot">Texto do enredo</string>
+    <string name="director">Director:</string>
+    <string name="movie_director">nome do diretor</string>
+    <string name="actors">Actors: </string>
+    <string name="ratings">ratig</string>
+    <string name="movie_actors">Nome dos atores</string>
+    <string name="writers">Writes: </string>
+    <string name="movie_writers">textos de escritore</string>
+    <string name="movie_runtime">runtime</string>
+</resources>
