@@ -2,6 +2,7 @@ package com.example.omdbapi.TelaDetalhes;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -35,8 +36,9 @@ public class DetalhesFilmeActivity extends AppCompatActivity implements Detalhes
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_filme);
-        getSupportActionBar().hide();
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
+        getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
+        getSupportActionBar().setTitle("Detalhes");     //Titulo para ser exibido na sua Action Bar em fren
         imdbID = getIntent().getStringExtra("imdbID");
         presenter = new DetalhesFilmePresenter(this);
 
@@ -63,6 +65,14 @@ public class DetalhesFilmeActivity extends AppCompatActivity implements Detalhes
      }
  });
 
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
+        switch (item.getItemId()) {
+            case android.R.id.home:  //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
+                onBackPressed();
+        }
+        return true;
     }
 
     @Override

@@ -13,4 +13,5 @@
     <string name="writers">Writes: </string>
     <string name="movie_writers">textos de escritore</string>
     <string name="movie_runtime">runtime</string>
+    <string name="filme_nao_encontrado">O filme não foi encontrado</string>
 </resources>

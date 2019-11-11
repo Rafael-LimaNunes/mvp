@@ -1,18 +1,21 @@
 package com.example.omdbapi.TelaListagem;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.omdbapi.R;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class ListaDeFilmesActivity extends AppCompatActivity implements ListaDeF
     private ListaDeFilmesAdapter adaptador;
     private ListaDeFilmesPresenter presenter;
     private SearchView pesquisa2;
+    private TextInputLayout pesquisaTitulo;
 
 
     @Override
@@ -31,13 +35,15 @@ public class ListaDeFilmesActivity extends AppCompatActivity implements ListaDeF
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        /*Toolbar toolbar = findViewById(R.id.toolbar);*/
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
+        getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
+        getSupportActionBar().setTitle("Filmes OMDB");     //Titulo para ser exibido na sua Action Bar em frente à seta
         presenter = new ListaDeFilmesPresenter(this);
         pesquisa = findViewById(R.id.etTitulo);
         btnBuscar  = findViewById(R.id.btnBuscar);
         recyclerView = findViewById(R.id.recyclerView);
-
-
+//        pesquisaTitulo = findViewById(R.id.filmeTituloLayout);
         btnBuscar.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -51,7 +57,11 @@ public class ListaDeFilmesActivity extends AppCompatActivity implements ListaDeF
 
             @Override
             public void Erro(String erro) {
-                Toast.makeText(getApplicationContext(),erro,Toast.LENGTH_LONG).show();
+                View contextView = findViewById(R.id.btnBuscar);
+                
+
+                Snackbar.make(contextView, R.string.filme_nao_encontrado, Snackbar.LENGTH_LONG)
+                        .show();
             }
         });
 
@@ -59,6 +69,17 @@ public class ListaDeFilmesActivity extends AppCompatActivity implements ListaDeF
             }
         });
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
+        switch (item.getItemId()) {
+            case android.R.id.home:  //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
+                finishAffinity();  //Método para matar a activity e não deixa-lá indexada na pilhagem
+                break;
+            default:break;
+        }
+        return true;
     }
 
     @Override
