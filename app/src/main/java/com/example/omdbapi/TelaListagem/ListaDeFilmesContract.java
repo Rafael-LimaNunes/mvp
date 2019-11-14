@@ -4,13 +4,18 @@ import java.util.List;
 
 public class ListaDeFilmesContract{
 
+
+
     interface View{
         void mostrarFilmes(List<Filme> filmes);
+/*        ListaDeFilmesAdapter getAdapter();*/
+
+
 
     }
 
     interface Presenter{
-        void carregarFilmes(String titulo, ListaDeFilmesCallBack listaDeFilmesCallBack);
+        void carregarFilmes(String titulo,int pagina, ListaDeFilmesCallBack listaDeFilmesCallBack);
 
     }
 

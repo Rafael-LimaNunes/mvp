@@ -16,11 +16,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 class ListaDeFilmesService extends AsyncTask<Void,Void,ListaDeFilmes> {
 
     private String titulo;
+    private static int page = 1;
 
     public ListaDeFilmesService() {}
 
-    public ListaDeFilmesService(String titulo) {
+    public ListaDeFilmesService(String titulo, int page) {
         this.titulo = titulo;
+        this.page = page;
     }
 
     public Retrofit retrofit = new Retrofit.Builder()
@@ -32,7 +34,7 @@ class ListaDeFilmesService extends AsyncTask<Void,Void,ListaDeFilmes> {
     protected ListaDeFilmes doInBackground(Void... voids) {
         StringBuilder resposta = new StringBuilder();
         try {
-            URL url = new URL("https://www.omdbapi.com/?s="+titulo+"&apikey=e2a2df13");
+            URL url = new URL("https://www.omdbapi.com/?s="+titulo+"&apikey=e2a2df13&page="+page);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept","application/json");

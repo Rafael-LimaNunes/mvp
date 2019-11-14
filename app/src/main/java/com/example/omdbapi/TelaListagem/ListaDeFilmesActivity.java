@@ -2,14 +2,18 @@ package com.example.omdbapi.TelaListagem;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +22,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
+
+import static android.widget.Toast.*;
 
 public class ListaDeFilmesActivity extends AppCompatActivity implements ListaDeFilmesContract.View{
 
@@ -28,6 +34,11 @@ public class ListaDeFilmesActivity extends AppCompatActivity implements ListaDeF
     private ListaDeFilmesPresenter presenter;
     private SearchView pesquisa2;
     private TextInputLayout pesquisaTitulo;
+    private boolean carregando= true;
+    int itensVisiveisPassadosContagem, itensVisiveisContagem, totalDeItensContagem;
+    private LinearLayoutManager linearLayoutManager;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private static int pagina = 1;
 
 
     @Override
@@ -43,33 +54,61 @@ public class ListaDeFilmesActivity extends AppCompatActivity implements ListaDeF
         pesquisa = findViewById(R.id.etTitulo);
         btnBuscar  = findViewById(R.id.btnBuscar);
         recyclerView = findViewById(R.id.recyclerView);
-//        pesquisaTitulo = findViewById(R.id.filmeTituloLayout);
+        linearLayoutManager = new LinearLayoutManager(this);
+//      pesquisaTitulo = findViewById(R.id.filmeTituloLayout);
         btnBuscar.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-        presenter.carregarFilmes(pesquisa.getText().toString(), new ListaDeFilmesCallBack() {
-            @Override
-            public void Carregado(List<Filme> resultado) {
-              mostrarFilmes(resultado);
-            }
+                presenter.carregarFilmes(pesquisa.getText().toString(), pagina, new ListaDeFilmesCallBack() {
+                    @Override
+                    public void Carregado(List<Filme> resultado) {
 
-            @Override
-            public void Erro(String erro) {
-                View contextView = findViewById(R.id.btnBuscar);
-                
+                        mostrarFilmes(resultado);
+                    }
 
-                Snackbar.make(contextView, R.string.filme_nao_encontrado, Snackbar.LENGTH_LONG)
-                        .show();
+                    @Override
+                    public void Erro(String erro) {
+                        View contextView = findViewById(R.id.btnBuscar);
+
+
+                        Snackbar.make(contextView, R.string.filme_nao_encontrado, Snackbar.LENGTH_LONG)
+                                .show();
+                    }
+                });
+
+
             }
         });
 
-
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int pagina, int totalItemsCount, RecyclerView view) {
+                    carregarProximaPaginaAPI(pagina);
             }
-        });
+        };
+
+        recyclerView.addOnScrollListener(scrollListener);
 
     }
+
+    private void carregarProximaPaginaAPI(int pagina) {
+        pagina ++;
+         presenter.carregarFilmes(pesquisa.getText().toString(), pagina, new ListaDeFilmesCallBack() {
+             @Override
+             public void Carregado(List<Filme> resultado) {
+                 adaptador.atualizarItens(resultado);
+                mostrarFilmes(resultado);
+             }
+
+             @Override
+             public void Erro(String erro) {
+                 Toast.makeText(getApplicationContext(), "Fim da lista", Toast.LENGTH_LONG).show();
+             }
+         });
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
@@ -86,7 +125,6 @@ public class ListaDeFilmesActivity extends AppCompatActivity implements ListaDeF
     public void mostrarFilmes(List<Filme> filmes) {
         recyclerView.setVisibility(View.VISIBLE);
         adaptador = new ListaDeFilmesAdapter(this, filmes);
-
         recyclerView.setAdapter(adaptador);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

@@ -16,6 +16,7 @@ import com.example.omdbapi.R;
 import com.example.omdbapi.TelaDetalhes.DetalhesFilmeActivity;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,6 +25,7 @@ class ListaDeFilmesAdapter extends RecyclerView.Adapter<ListaDeFilmesAdapter.Vie
 
     private List<Filme> filmes;
     private Context context;
+    private OnBottomReachedListener onBottomReachedListener;
 
 
     ListaDeFilmesAdapter(Context context, List<Filme> filmes) {
@@ -75,6 +77,12 @@ class ListaDeFilmesAdapter extends RecyclerView.Adapter<ListaDeFilmesAdapter.Vie
       return filmes.size();
     }
 
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener) {
+        this.onBottomReachedListener = onBottomReachedListener;
+    }
+
+
+
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView titulo;
         private TextView tipo;
@@ -89,5 +97,15 @@ class ListaDeFilmesAdapter extends RecyclerView.Adapter<ListaDeFilmesAdapter.Vie
             ano = itemView.findViewById(R.id.txtAno);
             poster = itemView.findViewById(R.id.imgPoster);
         }
+    }
+     interface OnBottomReachedListener{
+        void onBootonReached();
+     }
+
+    void atualizarItens(List<Filme> novosFilmes){
+        ArrayList<Filme> listaFinal = new ArrayList<Filme>();
+        listaFinal.addAll(filmes);
+        listaFinal.addAll(novosFilmes);
+        filmes = listaFinal;
     }
 }
